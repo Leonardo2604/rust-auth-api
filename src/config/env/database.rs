@@ -33,7 +33,7 @@ impl Database {
         }
     }
 
-    pub fn host(&self) -> &String {
+    pub fn host(&self) -> &str {
         &self.host
     }
 
@@ -41,15 +41,15 @@ impl Database {
         self.port
     }
 
-    pub fn username(&self) -> &String {
+    pub fn username(&self) -> &str {
         &self.username
     }
 
-    pub fn password(&self) -> &String {
+    pub fn password(&self) -> &str {
         &self.password
     }
 
-    pub fn name(&self) -> &String {
+    pub fn name(&self) -> &str {
         &self.name
     }
 

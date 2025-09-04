@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::Serialize;
 
 #[derive(sqlx::FromRow, Debug, Serialize)]
-pub struct User {
+pub struct UserDto {
     id: i32,
     name: String,
     email: String,

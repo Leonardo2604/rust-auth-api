@@ -2,13 +2,13 @@ use crate::config::env;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
 
-pub struct Database {
+pub struct PostgresDatabase {
     env: env::Database,
 }
 
-impl Database {
-    pub fn new(env: env::Database) -> Database {
-        Database { env }
+impl PostgresDatabase {
+    pub fn new(env: env::Database) -> Self {
+        Self { env }
     }
 
     pub async fn connect(&self) -> Result<Pool<Postgres>, sqlx::Error> {

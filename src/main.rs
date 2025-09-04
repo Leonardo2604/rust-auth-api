@@ -1,33 +1,34 @@
+mod domain;
+mod infrastructure;
+mod application;
 mod config;
-mod handlers;
-mod models;
-mod routes;
 
 use std::error::Error;
 use std::sync::Arc;
 
-use tokio::net::TcpListener;
+use tokio::{sync::oneshot, signal};
 
-use config::{AppState, Database, Env};
+use config::{AppState, Env};
+use infrastructure::http::axum::AxumServer;
+use infrastructure::database::postgres::PostgresDatabase;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     let env = Env::load();
 
-    let pool = Database::new(env.database().clone()).connect().await?;
+    let db_pool = PostgresDatabase::new(env.database().clone()).connect().await?;
 
-    let arc_pool = Arc::new(pool);
+    let app_state = AppState { db_pool };
 
-    let app_state = AppState::new(arc_pool);
+    let server = AxumServer::new(env.server().addr(), app_state);
 
-    let router = routes::router(app_state);
+    let shutdown_tx = server.start().await?;
 
-    let addr = env.server().addr();
-    let listener = TcpListener::bind(addr).await?;
+    signal::ctrl_c().await?;
 
-    println!("Servidor rodando em http://{}", addr);
+    println!("Shutting down server...");
 
-    axum::serve(listener, router).await?;
+    shutdown_tx.send(()).unwrap();
 
     Ok(())
 }
