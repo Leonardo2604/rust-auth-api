@@ -1,20 +1,31 @@
-use crate::config::env::DatabaseEnv;
+use crate::config::env;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
 
 pub struct Database {
-    env: DatabaseEnv,
+    env: env::Database,
 }
 
 impl Database {
-    pub fn new(env: DatabaseEnv) -> Database {
+    pub fn new(env: env::Database) -> Database {
         Database { env }
     }
 
     pub async fn connect(&self) -> Result<Pool<Postgres>, sqlx::Error> {
         PgPoolOptions::new()
-            .max_connections(5)
-            .connect(self.env.url())
+            .max_connections(self.env.max_connections())
+            .connect(&self.url())
             .await
+    }
+
+    pub fn url(&self) -> String {
+        format!(
+            "postgres://{}:{}@{}:{}/{}",
+            self.env.username(),
+            self.env.password(),
+            self.env.host(),
+            self.env.port(),
+            self.env.name()
+        )
     }
 }
