@@ -1,0 +1,1 @@
+pub const MIN_PASSWORD_LENGTH: usize = 8;
