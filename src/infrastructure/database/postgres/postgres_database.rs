@@ -1,13 +1,13 @@
-use crate::config::env;
+use crate::config::env::Database;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};
 
 pub struct PostgresDatabase {
-    env: env::Database,
+    env: Database,
 }
 
 impl PostgresDatabase {
-    pub fn new(env: env::Database) -> Self {
+    pub fn new(env: Database) -> Self {
         Self { env }
     }
 

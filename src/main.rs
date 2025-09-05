@@ -4,11 +4,10 @@ mod application;
 mod config;
 
 use std::error::Error;
-use std::sync::Arc;
 
-use tokio::{sync::oneshot, signal};
+use tokio::signal;
 
-use config::{AppState, Env};
+use config::{AppState, env::Env};
 use infrastructure::http::axum::AxumServer;
 use infrastructure::database::postgres::PostgresDatabase;
 
@@ -18,7 +17,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let db_pool = PostgresDatabase::new(env.database().clone()).connect().await?;
 
-    let app_state = AppState { db_pool };
+    let app_state = AppState::new(db_pool);
 
     let server = AxumServer::new(env.server().addr(), app_state);
 

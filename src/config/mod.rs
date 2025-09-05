@@ -1,5 +1,4 @@
-mod env;
+pub mod env;
 mod state;
 
-pub use env::Env;
 pub use state::AppState;

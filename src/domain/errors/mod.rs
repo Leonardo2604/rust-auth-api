@@ -17,6 +17,6 @@ pub enum AppError {
     #[error("{0}")]
     Forbidden(String),
 
-    #[error()]
+    #[error("")]
     InternalServerError,
 }

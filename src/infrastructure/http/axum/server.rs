@@ -3,7 +3,7 @@ use std::sync::Arc;
 
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
-use axum::Router;
+use axum;
 
 use crate::config::AppState;
 use crate::infrastructure::http::axum::routes;
@@ -28,13 +28,12 @@ impl AxumServer {
         println!("Server running at {}", local_addr);
 
         tokio::spawn(async move {
-            axum::Server::from_tcp(listener)?
-                .serve(app.into_make_service())
+            axum::serve(listener, app)
                 .with_graceful_shutdown(async {
                     shutdown_rx.await.ok();
                 })
-                .with_timeout(std::time::Duration::from_secs(30))
-                .await?;
+                .await
+                .unwrap()
         });
 
         Ok(shutdown_tx)

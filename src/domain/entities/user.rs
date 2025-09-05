@@ -1,19 +1,19 @@
 use chrono::{DateTime, Utc};
 
-use crate::domain::value_objects::{Email, Password};
+use crate::domain::value_objects::Email;
 
 pub struct User {
     id: i32,
     name: String,
     email: Email,
-    password: Password,
+    password: String,
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
     deleted_at: Option<DateTime<Utc>>,
 }
 
 impl User {
-    pub fn new(id: i32, name: String, email: Email, password: Password) -> User {
+    pub fn new(id: i32, name: String, email: Email, password: String) -> User {
         let now = Utc::now();
 
         User {
@@ -39,7 +39,7 @@ impl User {
         &self.email
     }
 
-    pub fn get_password(&self) -> &Password {
+    pub fn get_password(&self) -> &str {
         &self.password
     }
 
